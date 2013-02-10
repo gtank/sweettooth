@@ -22,93 +22,93 @@ public class Gingerbread implements Bluetooth {
     private boolean connected;
     
     public Gingerbread() {
-    	try {
-    		baseHeadset = Class.forName("android.bluetooth.BluetoothHeadset");
-    	} catch (ClassNotFoundException e) {
-    		e.printStackTrace();
-    	}
+        try {
+            baseHeadset = Class.forName("android.bluetooth.BluetoothHeadset");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
     
     public void setContext(Context context) {
-    	appContext = context;
+        appContext = context;
     }
     
     public void getProxy() throws Exception {
-    	if(appContext != null) {
-    		try {
-    			Class<?> serviceListener = baseHeadset.getDeclaredClasses()[0]; //android.bluetooth.BluetoothHeadset$ServiceListener
-    			Object listenerProxy = java.lang.reflect.Proxy.newProxyInstance(serviceListener.getClassLoader(), 
-    						new Class[] { serviceListener },
-    						new InvocationHandler() {
-    							@Override
-    							public Object invoke(Object proxy, Method method,
-    									Object[] args) throws Throwable {
-    								String methodName = method.getName();
-    								if(methodName.equals("onServiceConnected")) {	
-    					                connected = true;
-    					            } else if(methodName.equals("onServiceDisconnected")) {
-    									connected = false;
-    								}
-    								return null;
-    							}
-    					
-    				});
-    			Constructor<?> constructor = baseHeadset.getConstructor(Context.class, serviceListener);
-    			btHeadset = constructor.newInstance(appContext, listenerProxy);
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    		}
-    	} else {
-    		throw new Exception("No application context supplied!");
-    	}
+        if(appContext != null) {
+            try {
+                Class<?> serviceListener = baseHeadset.getDeclaredClasses()[0]; //android.bluetooth.BluetoothHeadset$ServiceListener
+                Object listenerProxy = java.lang.reflect.Proxy.newProxyInstance(serviceListener.getClassLoader(), 
+                            new Class[] { serviceListener },
+                            new InvocationHandler() {
+                                @Override
+                                public Object invoke(Object proxy, Method method,
+                                        Object[] args) throws Throwable {
+                                    String methodName = method.getName();
+                                    if(methodName.equals("onServiceConnected")) {    
+                                        connected = true;
+                                    } else if(methodName.equals("onServiceDisconnected")) {
+                                        connected = false;
+                                    }
+                                    return null;
+                                }
+                        
+                    });
+                Constructor<?> constructor = baseHeadset.getConstructor(Context.class, serviceListener);
+                btHeadset = constructor.newInstance(appContext, listenerProxy);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            throw new Exception("No application context supplied!");
+        }
     }
     
     public void releaseProxy() {
-    	//TODO, does not affect functionality
+        //TODO, does not affect functionality
     }
     
     public void startVoiceRecognition() {
-    	if(connected) {
-    		try {
-    			Method startVoice = btHeadset.getClass().getMethod("startVoiceRecognition");
-    			boolean started = (Boolean) startVoice.invoke(btHeadset, (Object[])null);
-    			if(started) {
+        if(connected) {
+            try {
+                Method startVoice = btHeadset.getClass().getMethod("startVoiceRecognition");
+                boolean started = (Boolean) startVoice.invoke(btHeadset, (Object[])null);
+                if(started) {
                     Intent btState = new Intent(BLUETOOTH_STATE);
                     btState.putExtra("bluetooth_connected", true);
                     appContext.sendBroadcast(btState);
-    			}
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    		}
-    	}
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void stopVoiceRecognition() {
-    	if(connected) {
-    		try {
-    			Method stopVoice = btHeadset.getClass().getMethod("stopVoiceRecognition");
-    			boolean stopped = (Boolean) stopVoice.invoke(btHeadset, (Object[])null);
-    			if(stopped) {
+        if(connected) {
+            try {
+                Method stopVoice = btHeadset.getClass().getMethod("stopVoiceRecognition");
+                boolean stopped = (Boolean) stopVoice.invoke(btHeadset, (Object[])null);
+                if(stopped) {
                     Intent btState = new Intent(BLUETOOTH_STATE);
                     btState.putExtra("bluetooth_connected", false);
                     appContext.sendBroadcast(btState);
-    			}
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    		}
-    	}
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
     
     public boolean isAvailable() {
-    	Method getCurrentHeadset;
-    	try {
-    		getCurrentHeadset = baseHeadset.getDeclaredMethod("getCurrentHeadset");
-    		BluetoothDevice btDevice = (BluetoothDevice) getCurrentHeadset.invoke(btHeadset, (Object[])null);
-    		return btDevice != null;
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-    	return false;
+        Method getCurrentHeadset;
+        try {
+            getCurrentHeadset = baseHeadset.getDeclaredMethod("getCurrentHeadset");
+            BluetoothDevice btDevice = (BluetoothDevice) getCurrentHeadset.invoke(btHeadset, (Object[])null);
+            return btDevice != null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

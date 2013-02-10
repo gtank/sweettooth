@@ -54,23 +54,23 @@ public class Honeycomb extends BroadcastReceiver implements BluetoothProfile.Ser
     }
     
     public void setContext(Context context) {
-    	appContext = context;
+        appContext = context;
     }
     
     public void getProxy() throws Exception {
-    	if(appContext != null) {
-    		BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-    		btAdapter.getProfileProxy(appContext, this, BluetoothProfile.HEADSET);
-    	} else {
-    		throw new Exception("No application context supplied!");
-    	}
+        if(appContext != null) {
+            BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+            btAdapter.getProfileProxy(appContext, this, BluetoothProfile.HEADSET);
+        } else {
+            throw new Exception("No application context supplied!");
+        }
     }
     
     public void releaseProxy() throws Exception {
-    	if(appContext != null) {
-    		BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-    		btAdapter.closeProfileProxy(BluetoothProfile.HEADSET, bluetoothHeadset);
-    	}
+        if(appContext != null) {
+            BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+            btAdapter.closeProfileProxy(BluetoothProfile.HEADSET, bluetoothHeadset);
+        }
     }
 
     public void startVoiceRecognition() {
