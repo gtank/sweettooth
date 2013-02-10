@@ -1,7 +1,7 @@
-Gingertooth
+Sweettooth
 -----------
 
-Gingertooth provides support for voice recognition via bluetooth headset for
+Sweettooth provides support for voice recognition via bluetooth headset for
 Android. It supports both Gingerbread and the current (Jelly Bean) 
 Bluetooth API. The Gingerbread functionality calls the then-private
 BluetoothHeadset class, and consequently is much different than the current
