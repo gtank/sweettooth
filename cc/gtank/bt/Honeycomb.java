@@ -1,19 +1,23 @@
 package cc.gtank.bt;
 
+import android.annotation.TargetApi;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHeadset;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.os.Build;
 
-public class BluetoothState extends BroadcastReceiver implements BluetoothProfile.ServiceListener {
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+public class Honeycomb extends BroadcastReceiver implements BluetoothProfile.ServiceListener, Bluetooth {
 
     public static enum VOICE { DISCONNECTED, CONNECTING, CONNECTED };
-    public static final String BLUETOOTH_STATE = "cc.gtank.bt.BLUETOOTH_STATE";
     
     private VOICE state = VOICE.DISCONNECTED;
     private BluetoothHeadset bluetoothHeadset = null;
+    private Context appContext = null;
     
     @Override
     public void onServiceConnected(int profile, BluetoothProfile proxy) {
@@ -48,6 +52,26 @@ public class BluetoothState extends BroadcastReceiver implements BluetoothProfil
             }
         }
     }
+    
+    public void setContext(Context context) {
+    	appContext = context;
+    }
+    
+    public void getProxy() throws Exception {
+    	if(appContext != null) {
+    		BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+    		btAdapter.getProfileProxy(appContext, this, BluetoothProfile.HEADSET);
+    	} else {
+    		throw new Exception("No application context supplied!");
+    	}
+    }
+    
+    public void releaseProxy() throws Exception {
+    	if(appContext != null) {
+    		BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+    		btAdapter.closeProfileProxy(BluetoothProfile.HEADSET, bluetoothHeadset);
+    	}
+    }
 
     public void startVoiceRecognition() {
         BluetoothDevice btDevice = bluetoothHeadset.getConnectedDevices().get(0);
@@ -62,10 +86,6 @@ public class BluetoothState extends BroadcastReceiver implements BluetoothProfil
 
     public boolean isAvailable() {
         return bluetoothHeadset != null && bluetoothHeadset.getConnectedDevices().size() > 0;
-    }
-    
-    public BluetoothHeadset getProxy() {
-        return bluetoothHeadset;
     }
     
     public VOICE getVoiceState() {
