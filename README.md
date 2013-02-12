@@ -19,14 +19,14 @@ Android you are on.
     }
 ```
     
-The rest of the setup procedure doesn't change. getProxy() will throw an
+The rest of the setup procedure doesn't change. obtainProxy() will throw an
 exception if you haven't set the application context.
 
 ```java
     bt.setContext(getApplicationContext());
     
     try {
-        bt.getProxy();
+        bt.obtainProxy();
     } catch (Exception e) {
         e.printStackTrace();
     }

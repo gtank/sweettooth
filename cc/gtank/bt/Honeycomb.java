@@ -57,7 +57,7 @@ public class Honeycomb extends BroadcastReceiver implements BluetoothProfile.Ser
         appContext = context;
     }
     
-    public void getProxy() throws Exception {
+    public void obtainProxy() throws Exception {
         if(appContext != null) {
             BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
             btAdapter.getProfileProxy(appContext, this, BluetoothProfile.HEADSET);

@@ -33,7 +33,7 @@ public class Gingerbread implements Bluetooth {
         appContext = context;
     }
     
-    public void getProxy() throws Exception {
+    public void obtainProxy() throws Exception {
         if(appContext != null) {
             try {
                 Class<?> serviceListener = baseHeadset.getDeclaredClasses()[0]; //android.bluetooth.BluetoothHeadset$ServiceListener

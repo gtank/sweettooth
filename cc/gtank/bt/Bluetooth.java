@@ -4,7 +4,7 @@ import android.content.Context;
 
 public interface Bluetooth {
     public void setContext(Context appContext);
-    public void getProxy() throws Exception;
+    public void obtainProxy() throws Exception;
     public void releaseProxy() throws Exception;
     public void startVoiceRecognition();
     public void stopVoiceRecognition();
