@@ -64,7 +64,14 @@ public class Gingerbread implements Bluetooth {
     }
     
     public void releaseProxy() {
-        //TODO, does not affect functionality
+        if(btHeadset != null) {
+            try {
+                Method close = btHeadset.getClass().getMethod("close");
+                close.invoke(btHeadset, (Object[])null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
     
     public void startVoiceRecognition() {
@@ -100,9 +107,8 @@ public class Gingerbread implements Bluetooth {
     }
     
     public boolean isAvailable() {
-        Method getCurrentHeadset;
         try {
-            getCurrentHeadset = baseHeadset.getDeclaredMethod("getCurrentHeadset");
+            Method getCurrentHeadset = baseHeadset.getDeclaredMethod("getCurrentHeadset");
             BluetoothDevice btDevice = (BluetoothDevice) getCurrentHeadset.invoke(btHeadset, (Object[])null);
             return btDevice != null;
         } catch (Exception e) {
